@@ -21,7 +21,9 @@
       <ul class="list-group">
         <% for (var i = 0; i < posts.length ; i++) { %>
         <li class="list-group-item">
-          <h4>할일 제목 : <%= posts[i].title %> </h4>
+          <h4>
+            <a href="/detail/<%= posts[i]._id %>" style="text-decoration: none;">할일 제목 : <%= posts[i].title %></a>
+          </h4>
           <p>할일 마감날짜 : <%= posts[i].date %> </p>
           <button class="btn btn-danger delete" data-id="<%= posts[i]._id %>">삭제</button>
         </li>

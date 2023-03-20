@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const app = express();
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({ extended : true }));
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
@@ -20,20 +22,12 @@ MongoClient.connect('mongodb+srv://admin:qwer1234@cluster0.0sp7tde.mongodb.net/t
     });
 })
 
-app.get('/pet', function(req, res){
-    res.send('펫용품을 쇼핑 할 수 있는 페이지 입니다.');
-});
-
-app.get('/beauty', function(req, res){
-    res.send('화장품 쇼핑 사이트 입니다.');
-});
-
 app.get('/', function(req, res){
-    res.sendfile(__dirname + '/index.html');
+    res.render('index.ejs');
 });
 
 app.get('/write', function(req, res){
-    res.sendfile(__dirname + '/write.html');
+    res.render('write.ejs');
 });
 
 app.post('/add', function(req, res){
@@ -88,3 +82,17 @@ app.get('/detail/:id', function(req, res){
         res.render('detail.ejs', { data : result });
     })
 })
+
+app.get('/edit/:id', function(req, res){
+    db.collection('post').findOne({ _id: parseInt(req.params.id) }, function(error, result){
+        console.log(result);
+        res.render('edit.ejs', {post : result});
+    });
+});
+
+app.put('/edit', function(req, res){
+    db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set : { title: req.body.title, date: req.body.date } }, function(error, result){
+        console.log('수정완료');
+        res.redirect('/list');
+   });
+});
